@@ -67,7 +67,10 @@ bool LegacyMoneyEconomy::add(const mce::UUID& uuid, int64_t amount) {
     }
     return false;
 }
-bool LegacyMoneyEconomy::reduce(const mce::UUID& uuid, int64_t amount) {
+bool LegacyMoneyEconomy::reduce(const mce::UUID& uuid, int64_t amount, bool allowNegative) {
+    if (!allowNegative && get(uuid) < amount) {
+        return false;
+    }
     if (!isAvailable()) {
         throw std::runtime_error("LegacyMoney is not loaded.");
     }
@@ -81,7 +84,10 @@ bool LegacyMoneyEconomy::reduce(const mce::UUID& uuid, int64_t amount) {
     }
     return false;
 }
-bool LegacyMoneyEconomy::transfer(const mce::UUID& from, const mce::UUID& to, int64_t amount) {
+bool LegacyMoneyEconomy::transfer(const mce::UUID& from, const mce::UUID& to, int64_t amount, bool allowNegative) {
+    if (!allowNegative && get(from) < amount) {
+        return false;
+    }
     if (!isAvailable()) {
         throw std::runtime_error("LegacyMoney is not loaded.");
     }

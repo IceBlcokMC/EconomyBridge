@@ -25,10 +25,10 @@ public:
     virtual bool add(mce::UUID const& uuid, int64_t amount) = 0;
 
     // 扣除玩家余额
-    virtual bool reduce(mce::UUID const& uuid, int64_t amount) = 0;
+    virtual bool reduce(mce::UUID const& uuid, int64_t amount, bool allowNegative = false) = 0;
 
     // 转账
-    virtual bool transfer(mce::UUID const& from, mce::UUID const& to, int64_t amount) = 0;
+    virtual bool transfer(mce::UUID const& from, mce::UUID const& to, int64_t amount, bool allowNegative = false) = 0;
 };
 
 } // namespace econbridge

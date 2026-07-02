@@ -11,6 +11,7 @@ end
 
 target("EconomyBridge") -- Change this to your mod name.
     add_rules("@levibuildscript/linkrule")
+    set_version("0.4.0")
     add_cxflags( "/EHa", "/utf-8", "/W4", "/w44265", "/w44289", "/w44296", "/w45263", "/w44738", "/w45204")
     add_defines("NOMINMAX", "UNICODE")
     add_packages("levilamina")

@@ -80,7 +80,10 @@ bool ScoreboardEconomy::add(const mce::UUID& uuid, int64_t amount) {
     );
     return result == ScoreboardOperationResult::Success;
 }
-bool ScoreboardEconomy::reduce(const mce::UUID& uuid, int64_t amount) {
+bool ScoreboardEconomy::reduce(const mce::UUID& uuid, int64_t amount, bool allowNegative) {
+    if (!allowNegative && get(uuid) < amount) {
+        return false;
+    }
     Scoreboard& scoreboard = ll::service::getLevel()->getScoreboard();
     Objective*  objective  = scoreboard.getObjective(scoreBoardName_);
     if (!objective) {
@@ -100,8 +103,11 @@ bool ScoreboardEconomy::reduce(const mce::UUID& uuid, int64_t amount) {
     );
     return result == ScoreboardOperationResult::Success;
 }
-bool ScoreboardEconomy::transfer(const mce::UUID& from, const mce::UUID& to, int64_t amount) {
-    if (reduce(from, amount)) {
+bool ScoreboardEconomy::transfer(const mce::UUID& from, const mce::UUID& to, int64_t amount, bool allowNegative) {
+    if (!allowNegative && get(from) < amount) {
+        return false;
+    }
+    if (reduce(from, amount, allowNegative)) {
         if (add(to, amount)) {
             return true;
         }
