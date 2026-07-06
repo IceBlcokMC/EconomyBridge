@@ -11,7 +11,6 @@ end
 
 target("EconomyBridge") -- Change this to your mod name.
     add_rules("@levibuildscript/linkrule")
-    set_version("0.4.0")
     if is_plat("windows") then
         add_defines("NOMINMAX", "UNICODE")
         set_exceptions("cxx")
