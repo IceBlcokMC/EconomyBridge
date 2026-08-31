@@ -2,6 +2,7 @@
 
 #include <ll/api/service/Bedrock.h>
 
+#include "mc/deps/core/string/HashedString.h"
 #include "mc/world/level/Level.h"
 #include "mc/world/scores/PlayerScoreSetFunction.h"
 #include "mc/world/scores/ScoreInfo.h"
@@ -19,7 +20,7 @@ Player* ScoreboardEconomy::uuid2player(mce::UUID const& uuid) {
     return ll::service::getLevel().transform([&](Level& level) { return level.getPlayer(uuid); });
 }
 ScoreboardId const& ScoreboardEconomy::getScoreboardId(Scoreboard& scoreboard, Player& player) {
-    ScoreboardId const& id = scoreboard.getScoreboardId(player);
+    ScoreboardId const& id = scoreboard.getScoreboardId(static_cast<Actor const&>(player));
     if (id.mRawID == ScoreboardId::INVALID().mRawID) {
         return scoreboard.createScoreboardId(player);
     }
@@ -38,7 +39,11 @@ int64_t ScoreboardEconomy::get(const mce::UUID& uuid) const {
     if (!player) {
         return 0;
     }
-    return objective->getPlayerScore(getScoreboardId(scoreboard, *player)).mValue;
+    auto score = scoreboard.tryGetIdScore(
+        getScoreboardId(scoreboard, *player),
+        HashedString::computeHash(scoreBoardName_)
+    );
+    return score ? score->mValue : 0;
 }
 bool ScoreboardEconomy::set(const mce::UUID& uuid, int64_t amount) {
     Scoreboard& scoreboard = ll::service::getLevel()->getScoreboard();
